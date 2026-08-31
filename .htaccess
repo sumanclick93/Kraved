@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Prefer real files (ping.php, assets, etc.)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Document root is the project folder, so static files live under public/
+RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
+
+# Everything else → public front controller (QSA keeps query strings on login/checkout)
+RewriteRule ^(.*)$ public/index.php [QSA,L]
