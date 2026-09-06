@@ -7,6 +7,60 @@ try {
   const money = (n) => (window.KRAVED?.currency || '£') + Number(n).toFixed(2);
   let lastCart = null;
 
+  function kravedToast(message, type = 'error', title = '') {
+    let container = document.getElementById('kraved-toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'kraved-toast-container';
+      container.className = 'kraved-toast-container';
+      document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `kraved-toast kraved-toast-${type}`;
+
+    const iconSvg = type === 'success'
+      ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`
+      : type === 'warning'
+      ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`
+      : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+
+    toast.innerHTML = `
+      <div class="kraved-toast-icon">${iconSvg}</div>
+      <div class="kraved-toast-content">
+        ${title ? `<div class="kraved-toast-title">${escapeHtml(title)}</div>` : ''}
+        <div class="kraved-toast-message">${escapeHtml(message)}</div>
+      </div>
+      <button class="kraved-toast-close" type="button" aria-label="Close">&times;</button>
+    `;
+
+    const closeBtn = toast.querySelector('.kraved-toast-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 300);
+      });
+    }
+
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.classList.remove('show');
+        toast.classList.add('hide');
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 4500);
+  }
+
+  // Intercept default alert calls
+  window.alert = function(msg) {
+    if (!msg) return;
+    kravedToast(String(msg), 'warning');
+  };
+
   async function api(path, opts = {}) {
     const headers = Object.assign({
       'X-CSRF-TOKEN': csrf(),
@@ -578,10 +632,14 @@ try {
     }
     // Enforce max per addon group
     const group = e.target.closest('.addon-group');
-    if (group && e.target.classList.contains('addon-input') && e.target.type === 'checkbox') {
-      const max = Number(group.dataset.max || 99) || 99;
-      const checked = group.querySelectorAll('.addon-input:checked');
-      if (checked.length > max) e.target.checked = false;
+    if (group) {
+      group.classList.remove('has-error');
+      group.querySelectorAll('.addon-error-msg').forEach(el => el.remove());
+      if (e.target.classList.contains('addon-input') && e.target.type === 'checkbox') {
+        const max = Number(group.dataset.max || 99) || 99;
+        const checked = group.querySelectorAll('.addon-input:checked');
+        if (checked.length > max) e.target.checked = false;
+      }
     }
     updatePmPrice();
   });
@@ -600,25 +658,73 @@ try {
   document.getElementById('pm-add')?.addEventListener('click', async () => {
     if (!pmState.product) return;
 
+    // Clear previous error states
+    document.querySelectorAll('#pm-body .has-error').forEach(el => el.classList.remove('has-error'));
+    document.querySelectorAll('#pm-body .addon-error-msg').forEach(el => el.remove());
+
     if (pmState.variants.length && !selectedVariantId()) {
-      alert('Please choose a size.');
+      const varGroup = document.getElementById('pm-variants');
+      if (varGroup) {
+        varGroup.classList.add('has-error');
+        varGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      kravedToast('Please select your preferred size option.', 'warning', 'Size Required');
       return;
     }
 
     // Validate required groups
+    let firstFailedGroup = null;
+    let failedTitle = '';
+    let failedMin = 1;
+
     for (const g of pmState.groups) {
       if (!Number(g.is_required) && Number(g.min_selection) === 0) continue;
       const wrap = document.querySelector(`.addon-group[data-group-id="${g.id}"]`);
       const n = wrap ? wrap.querySelectorAll('.addon-input:checked').length : 0;
-      if (n < Number(g.min_selection || (g.is_required ? 1 : 0))) {
-        alert(`Please complete: ${g.title}`);
-        return;
+      const minReq = Number(g.min_selection || (g.is_required ? 1 : 0));
+
+      if (n < minReq) {
+        if (!firstFailedGroup && wrap) {
+          firstFailedGroup = wrap;
+          failedTitle = g.title;
+          failedMin = minReq;
+        }
+        if (wrap) {
+          wrap.classList.add('has-error');
+          if (!wrap.querySelector('.addon-error-msg')) {
+            const errEl = document.createElement('div');
+            errEl.className = 'addon-error-msg';
+            errEl.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> ${minReq > 1 ? `Please select at least ${minReq} options` : 'Selection required'}`;
+            const header = wrap.querySelector('.addon-hint') || wrap.querySelector('h3');
+            if (header && header.nextSibling) {
+              wrap.insertBefore(errEl, header.nextSibling);
+            } else {
+              wrap.appendChild(errEl);
+            }
+          }
+        }
       }
     }
+
+    if (firstFailedGroup) {
+      firstFailedGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const msg = failedMin > 1
+        ? `Please select at least ${failedMin} options for ${failedTitle}.`
+        : `Please choose an option for ${failedTitle} to continue.`;
+      kravedToast(msg, 'warning', 'Selection Required');
+      return;
+    }
+
     if (Number(pmState.product.is_box_deal)) {
       const max = Number(pmState.product.box_max_items) || 4;
-      if (selectedBoxPicks().length !== max) {
-        alert(`Please select exactly ${max} cookies for this box.`);
+      const picked = selectedBoxPicks().length;
+      if (picked !== max) {
+        const boxGroup = document.querySelector('[data-box-max]');
+        if (boxGroup) {
+          boxGroup.classList.add('has-error');
+          boxGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        kravedToast(`Please select exactly ${max} cookies for this box (${picked}/${max} chosen).`, 'warning', 'Incomplete Selection');
         return;
       }
     }
@@ -638,7 +744,7 @@ try {
       pmState.justAdded = true;
       kravedModal(pmModalEl)?.hide();
     } catch (err) {
-      alert(err.data?.error || err.message);
+      kravedToast(err.data?.error || err.message || 'Could not add item to cart.', 'error', 'Error');
     }
   });
 
@@ -766,7 +872,7 @@ try {
     if (btn.classList.contains('disabled')) {
       e.preventDefault();
       const warn = minOrderMessage(lastCart || {});
-      if (warn) alert(warn);
+      if (warn) kravedToast(warn, 'warning', 'Minimum Order Required');
       return;
     }
     if (shouldShowUpsell()) {
@@ -893,7 +999,7 @@ try {
       }
     } catch (err) {
       if (err.status === 401) openWishlistLogin();
-      else alert(err.data?.error || err.message);
+      else kravedToast(err.data?.error || err.message || 'Action failed.', 'error', 'Error');
     }
   });
 
