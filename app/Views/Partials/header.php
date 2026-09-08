@@ -10,6 +10,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 $isHome = str_ends_with(rtrim($currentPath, '/'), '') || preg_match('#/(public)?/?$#', $currentPath);
 $isOrders = (bool) preg_match('#/orders?(?:/|$)#', $currentPath);
 $isAccount = (bool) preg_match('#/(account|wishlist)(?:/|$)#', $currentPath);
+$isMenu = (bool) preg_match('#/menu(?:/|$)#', $currentPath);
 $nav = ($cms['nav']['content'] ?? null) ?: SiteSection::content('nav');
 $navLinks = $nav['links'] ?? [];
 $showNav = !isset($cms['nav']) || !empty($cms['nav']['is_visible']);
@@ -35,7 +36,10 @@ $wishlistCount = $user ? count(Wishlist::currentProductIds()) : 0;
     <nav class="main-nav" id="main-nav">
       <?php foreach ($navLinks as $link):
         $href = SiteSection::resolveHref($link['href'] ?? '/');
-        $active = ($isHome && (($link['href'] ?? '') === '/' || ($link['href'] ?? '') === ''));
+        $rawHref = $link['href'] ?? '';
+        $label = strtolower(trim($link['label'] ?? ''));
+        $active = ($isHome && ($rawHref === '/' || $rawHref === ''))
+               || ($isMenu && ($label === 'menu' || str_contains($rawHref, 'menu')));
       ?>
         <a href="<?= Helpers::e($href) ?>" class="<?= $active ? 'active' : '' ?>"><?= Helpers::e($link['label'] ?? '') ?></a>
       <?php endforeach; ?>

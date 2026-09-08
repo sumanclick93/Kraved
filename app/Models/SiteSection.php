@@ -24,6 +24,28 @@ final class SiteSection extends Model
                     if (!is_array($content)) {
                         $content = self::defaults()[$row['section_key']]['content'] ?? [];
                     }
+                    if (isset($content['links']) && is_array($content['links'])) {
+                        foreach ($content['links'] as &$lk) {
+                            if (isset($lk['label']) && in_array(strtolower(trim($lk['label'])), ['offers', 'offere', 'offer'], true)) {
+                                $lk['label'] = 'Reviews';
+                            }
+                            if (isset($lk['href']) && ($lk['href'] === '/#menu' || $lk['href'] === '#menu')) {
+                                $lk['href'] = '/menu';
+                            }
+                        }
+                        unset($lk);
+                    }
+                    if (isset($content['quick_links']) && is_array($content['quick_links'])) {
+                        foreach ($content['quick_links'] as &$lk) {
+                            if (isset($lk['label']) && in_array(strtolower(trim($lk['label'])), ['offers', 'offere', 'offer'], true)) {
+                                $lk['label'] = 'Reviews';
+                            }
+                            if (isset($lk['href']) && ($lk['href'] === '/#menu' || $lk['href'] === '#menu')) {
+                                $lk['href'] = '/menu';
+                            }
+                        }
+                        unset($lk);
+                    }
                     $map[$row['section_key']] = [
                         'id' => (int) $row['id'],
                         'label' => $row['label'],
@@ -146,6 +168,9 @@ final class SiteSection extends Model
         if ($href === '' || $href === '#') {
             return '#';
         }
+        if ($href === '/#menu' || $href === '#menu') {
+            return Helpers::baseUrl('menu');
+        }
         if (str_starts_with($href, 'http://') || str_starts_with($href, 'https://') || str_starts_with($href, 'mailto:')) {
             return $href;
         }
@@ -170,9 +195,9 @@ final class SiteSection extends Model
                 'content' => [
                     'links' => [
                         ['label' => 'Home', 'href' => '/'],
-                        ['label' => 'Menu', 'href' => '/#menu'],
+                        ['label' => 'Menu', 'href' => '/menu'],
                         ['label' => 'Best Sellers', 'href' => '/#popular'],
-                        ['label' => 'Offers', 'href' => '/#offers'],
+                        ['label' => 'Reviews', 'href' => '/#offers'],
                         ['label' => 'About Us', 'href' => '/#about'],
                         ['label' => 'Contact', 'href' => '/#contact'],
                     ],
@@ -260,9 +285,9 @@ final class SiteSection extends Model
                     'copyright' => 'Kraved Desserts. All rights reserved.',
                     'made_in' => 'Made with ♥ in Colne',
                     'quick_links' => [
-                        ['label' => 'Menu', 'href' => '/#menu'],
+                        ['label' => 'Menu', 'href' => '/menu'],
                         ['label' => 'Best Sellers', 'href' => '/#popular'],
-                        ['label' => 'Offers', 'href' => '/#offers'],
+                        ['label' => 'Reviews', 'href' => '/#offers'],
                         ['label' => 'About Us', 'href' => '/#about'],
                         ['label' => 'Contact', 'href' => '/#contact'],
                     ],

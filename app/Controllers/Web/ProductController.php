@@ -12,6 +12,45 @@ use App\Models\SubCategory;
 
 final class ProductController extends Controller
 {
+    public function menuPage(): void
+    {
+        $categories = (new Category())->withSubCategories();
+        $productModel = new Product();
+        $menu = [];
+        foreach ($categories as $cat) {
+            $products = $productModel->byCategory((int) $cat['id']);
+            if ($products) {
+                $menu[] = [
+                    'category' => $cat,
+                    'products' => $products,
+                ];
+            }
+        }
+
+        $gallery = [
+            \App\Core\Helpers::asset('images/product-lava-cake.png'),
+            \App\Core\Helpers::asset('images/product-biscoff-cheesecake.png'),
+            \App\Core\Helpers::asset('images/product-cookies-cream.png'),
+            \App\Core\Helpers::asset('images/product-choc-waffle.png'),
+            \App\Core\Helpers::asset('images/hero-dessert.png'),
+        ];
+
+        $this->view('Storefront/products/menu', [
+            'title'       => 'Menu - ' . \App\Core\Helpers::setting('store_name', 'Kraved'),
+            'categories'  => $categories,
+            'menu'        => $menu,
+            'gallery'     => $gallery,
+            'cms'         => \App\Models\SiteSection::map(),
+            'cartCount'   => Cart::count(),
+            'fulfillment' => Cart::fulfillment(),
+        ], 'Storefront/layouts/main');
+    }
+
+    public function menu(): void
+    {
+        $this->menuPage();
+    }
+
     public function category(string $slug): void
     {
         $category = (new Category())->findBySlug($slug);

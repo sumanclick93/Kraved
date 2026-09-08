@@ -26,6 +26,7 @@ $router = new Router();
 
 // Storefront
 $router->get('/', [HomeController::class, 'index']);
+$router->get('/menu', [ProductController::class, 'menuPage']);
 $router->get('/category/{slug}', [ProductController::class, 'category']);
 $router->get('/subcategory/{slug}', [ProductController::class, 'subCategory']);
 $router->get('/api/product/{id}/customise', [ProductController::class, 'customise']);

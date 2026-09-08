@@ -68,4 +68,15 @@ final class HomeController extends Controller
             'cartCount'   => Cart::count(),
         ], 'Storefront/layouts/main');
     }
+
+    public function menuPage(): void
+    {
+        (new ProductController())->menuPage();
+    }
+
+    public function menu(): void
+    {
+        (new ProductController())->menuPage();
+    }
 }
+
