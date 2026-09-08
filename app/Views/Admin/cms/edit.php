@@ -55,28 +55,6 @@ $icons = ['phone', 'pin', 'truck', 'bag', 'percent', 'store', 'chef'];
       </div>
     </div>
 
-  <?php elseif ($key === 'features'): ?>
-    <?php $items = $c['items'] ?? []; ?>
-    <div id="feature-rows">
-      <?php foreach ($items as $i => $item): ?>
-        <div class="border rounded p-3 mb-3 feature-row">
-          <div class="row g-2">
-            <div class="col-md-4"><input name="item_title[]" class="form-control" placeholder="Title" value="<?= Helpers::e($item['title'] ?? '') ?>"></div>
-            <div class="col-md-3">
-              <select name="item_icon[]" class="form-select">
-                <?php foreach ($icons as $ic): ?>
-                  <option value="<?= $ic ?>" <?= ($item['icon'] ?? '') === $ic ? 'selected' : '' ?>><?= $ic ?></option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-            <div class="col-md-5"><button type="button" class="btn btn-outline-danger" onclick="this.closest('.feature-row').remove()">Remove</button></div>
-            <div class="col-12"><textarea name="item_text[]" class="form-control" rows="2" placeholder="Description"><?= Helpers::e($item['text'] ?? '') ?></textarea></div>
-          </div>
-        </div>
-      <?php endforeach; ?>
-    </div>
-    <button type="button" class="btn btn-sm btn-outline-dark" onclick="addFeatureRow()">+ Add card</button>
-
   <?php elseif ($key === 'popular'): ?>
     <div class="alert alert-info small">Products shown here are those marked <strong>Featured</strong> in Products admin.</div>
     <div class="row g-3">
@@ -85,26 +63,6 @@ $icons = ['phone', 'pin', 'truck', 'bag', 'percent', 'store', 'chef'];
       <div class="col-md-6"><label class="form-label">View all label</label><input name="view_all_label" class="form-control" value="<?= Helpers::e($c['view_all_label'] ?? '') ?>"></div>
       <div class="col-md-6"><label class="form-label">View all link</label><input name="view_all_href" class="form-control" value="<?= Helpers::e($c['view_all_href'] ?? '#menu') ?>"></div>
     </div>
-
-  <?php elseif ($key === 'how_it_works'): ?>
-    <div class="mb-3"><label class="form-label">Section title</label><input name="title" class="form-control" value="<?= Helpers::e($c['title'] ?? '') ?>"></div>
-    <?php $steps = $c['steps'] ?? []; ?>
-    <div id="step-rows">
-      <?php foreach ($steps as $step): ?>
-        <div class="row g-2 mb-2 step-row">
-          <div class="col-md-6"><input name="step_title[]" class="form-control" value="<?= Helpers::e($step['title'] ?? '') ?>"></div>
-          <div class="col-md-4">
-            <select name="step_icon[]" class="form-select">
-              <?php foreach ($icons as $ic): ?>
-                <option value="<?= $ic ?>" <?= ($step['icon'] ?? '') === $ic ? 'selected' : '' ?>><?= $ic ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="col-md-2"><button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.step-row').remove()">Remove</button></div>
-        </div>
-      <?php endforeach; ?>
-    </div>
-    <button type="button" class="btn btn-sm btn-outline-dark" onclick="addStepRow()">+ Add step</button>
 
   <?php elseif ($key === 'about'): ?>
     <div class="row g-3">
@@ -236,27 +194,6 @@ function addNamedLinkRow(wrapId, prefix) {
   div.innerHTML = `<div class="col-md-5"><input name="${prefix}_label[]" class="form-control" placeholder="Label"></div>
     <div class="col-md-5"><input name="${prefix}_href[]" class="form-control" placeholder="Href"></div>
     <div class="col-md-2"><button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.link-row').remove()">Remove</button></div>`;
-  wrap.appendChild(div);
-}
-function addFeatureRow() {
-  const wrap = document.getElementById('feature-rows');
-  const div = document.createElement('div');
-  div.className = 'border rounded p-3 mb-3 feature-row';
-  div.innerHTML = `<div class="row g-2">
-    <div class="col-md-4"><input name="item_title[]" class="form-control" placeholder="Title"></div>
-    <div class="col-md-3"><select name="item_icon[]" class="form-select"><option value="pin">pin</option><option value="truck">truck</option><option value="bag">bag</option><option value="percent">percent</option><option value="store">store</option><option value="chef">chef</option></select></div>
-    <div class="col-md-5"><button type="button" class="btn btn-outline-danger" onclick="this.closest('.feature-row').remove()">Remove</button></div>
-    <div class="col-12"><textarea name="item_text[]" class="form-control" rows="2" placeholder="Description"></textarea></div>
-  </div>`;
-  wrap.appendChild(div);
-}
-function addStepRow() {
-  const wrap = document.getElementById('step-rows');
-  const div = document.createElement('div');
-  div.className = 'row g-2 mb-2 step-row';
-  div.innerHTML = `<div class="col-md-6"><input name="step_title[]" class="form-control"></div>
-    <div class="col-md-4"><select name="step_icon[]" class="form-select"><option value="pin">pin</option><option value="truck">truck</option><option value="bag">bag</option><option value="percent">percent</option><option value="store">store</option><option value="chef">chef</option></select></div>
-    <div class="col-md-2"><button type="button" class="btn btn-outline-danger w-100" onclick="this.closest('.step-row').remove()">Remove</button></div>`;
   wrap.appendChild(div);
 }
 function addSocialRow() {

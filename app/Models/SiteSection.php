@@ -195,17 +195,6 @@ final class SiteSection extends Model
                     'takeaway_subtitle' => 'Collect in store',
                 ],
             ],
-            'features' => [
-                'label' => 'Feature Cards',
-                'content' => [
-                    'items' => [
-                        ['title' => 'Order Online', 'text' => 'Browse the menu and order at kraveddesserts.com.', 'icon' => 'phone'],
-                        ['title' => 'Delivery', 'text' => 'Fresh desserts delivered from our Colne kitchen.', 'icon' => 'truck'],
-                        ['title' => 'Collection', 'text' => 'Collect from Unit 2, Old Biscuit Factory, Dockray Street.', 'icon' => 'bag'],
-                        ['title' => 'Open Late', 'text' => 'Mon–Fri 5pm to 11pm · Sat & Sun 2pm to 11pm.', 'icon' => 'store'],
-                    ],
-                ],
-            ],
             'popular' => [
                 'label' => 'Popular Right Now',
                 'content' => [
@@ -213,18 +202,6 @@ final class SiteSection extends Model
                     'view_all_label' => 'View All',
                     'view_all_href' => '#menu',
                     'limit' => 8,
-                ],
-            ],
-            'how_it_works' => [
-                'label' => 'How It Works',
-                'content' => [
-                    'title' => 'Order Online, Delivery or Collection',
-                    'steps' => [
-                        ['title' => 'Order Online', 'icon' => 'phone'],
-                        ['title' => 'Freshly Prepared With Love', 'icon' => 'chef'],
-                        ['title' => 'Delivery or Collection', 'icon' => 'bag'],
-                        ['title' => 'Taste the Sweetness in Every Bite', 'icon' => 'store'],
-                    ],
                 ],
             ],
             'about' => [
@@ -291,7 +268,7 @@ final class SiteSection extends Model
                     ],
                     'info_links' => [
                         ['label' => 'Delivery Info', 'href' => '#fulfillment'],
-                        ['label' => 'FAQs', 'href' => '/#how-it-works'],
+                        ['label' => 'FAQs', 'href' => '#'],
                         ['label' => 'Terms & Conditions', 'href' => '#'],
                         ['label' => 'Privacy Policy', 'href' => '#'],
                     ],

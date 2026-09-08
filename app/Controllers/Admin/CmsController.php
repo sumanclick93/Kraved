@@ -105,14 +105,12 @@ final class CmsController extends Controller
         return match ($key) {
             'nav' => $this->parseLinks('links'),
             'hero' => $this->parseHero($existing),
-            'features' => $this->parseFeatures(),
             'popular' => [
                 'title' => trim((string) ($_POST['title'] ?? '')),
                 'view_all_label' => trim((string) ($_POST['view_all_label'] ?? 'View All')),
                 'view_all_href' => trim((string) ($_POST['view_all_href'] ?? '#menu')),
                 'limit' => max(1, min(24, (int) ($_POST['limit'] ?? 8))),
             ],
-            'how_it_works' => $this->parseHow(),
             'about' => [
                 'eyebrow' => trim((string) ($_POST['eyebrow'] ?? '')),
                 'title' => trim((string) ($_POST['title'] ?? '')),
@@ -184,51 +182,6 @@ final class CmsController extends Controller
         return [$field => $items];
     }
 
-    private function parseFeatures(): array
-    {
-        $titles = $_POST['item_title'] ?? [];
-        $texts = $_POST['item_text'] ?? [];
-        $icons = $_POST['item_icon'] ?? [];
-        $items = [];
-        if (!is_array($titles)) {
-            return ['items' => []];
-        }
-        foreach ($titles as $i => $title) {
-            $title = trim((string) $title);
-            if ($title === '') {
-                continue;
-            }
-            $items[] = [
-                'title' => $title,
-                'text' => trim((string) ($texts[$i] ?? '')),
-                'icon' => trim((string) ($icons[$i] ?? 'pin')) ?: 'pin',
-            ];
-        }
-        return ['items' => $items];
-    }
-
-    private function parseHow(): array
-    {
-        $titles = $_POST['step_title'] ?? [];
-        $icons = $_POST['step_icon'] ?? [];
-        $steps = [];
-        if (is_array($titles)) {
-            foreach ($titles as $i => $title) {
-                $title = trim((string) $title);
-                if ($title === '') {
-                    continue;
-                }
-                $steps[] = [
-                    'title' => $title,
-                    'icon' => trim((string) ($icons[$i] ?? 'pin')) ?: 'pin',
-                ];
-            }
-        }
-        return [
-            'title' => trim((string) ($_POST['title'] ?? '')),
-            'steps' => $steps,
-        ];
-    }
 
     private function parseChips(): array
     {

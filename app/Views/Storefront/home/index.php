@@ -8,9 +8,7 @@ $collectionAddress = (string) Helpers::setting('collection_address', 'Unit 2, Ol
 $popular = $popular ?? [];
 $cms = $cms ?? [];
 $hero = $cms['hero']['content'] ?? SiteSection::content('hero');
-$features = $cms['features']['content'] ?? SiteSection::content('features');
 $popularCfg = $cms['popular']['content'] ?? SiteSection::content('popular');
-$how = $cms['how_it_works']['content'] ?? SiteSection::content('how_it_works');
 $about = $cms['about']['content'] ?? SiteSection::content('about');
 $trust = $cms['trust_bar']['content'] ?? SiteSection::content('trust_bar');
 $hygiene = $cms['hygiene']['content'] ?? SiteSection::content('hygiene');
@@ -104,21 +102,6 @@ $show = static fn (string $key): bool => !isset($cms[$key]) || !empty($cms[$key]
 </section>
 <?php endif; ?>
 
-<?php if ($show('features')): ?>
-<section class="lp-features">
-  <div class="container features-grid">
-    <?php foreach (($features['items'] ?? []) as $item): ?>
-      <article class="feature-card">
-        <div class="feature-glyph<?= ($item['icon'] ?? '') === 'percent' ? ' feature-glyph--pct' : '' ?>">
-          <?php $icon = $item['icon'] ?? 'pin'; require dirname(__DIR__, 2) . '/Partials/cms-icon.php'; ?>
-        </div>
-        <h3><?= Helpers::e($item['title'] ?? '') ?></h3>
-        <p><?= Helpers::e($item['text'] ?? '') ?></p>
-      </article>
-    <?php endforeach; ?>
-  </div>
-</section>
-<?php endif; ?>
 
 <?php if ($show('popular')): ?>
 <section class="lp-popular section" id="popular">
@@ -161,28 +144,6 @@ $show = static fn (string $key): bool => !isset($cms[$key]) || !empty($cms[$key]
 </section>
 <?php endif; ?>
 
-<?php if ($show('how_it_works')): ?>
-<section class="lp-how section" id="how-it-works">
-  <div class="container">
-    <h2 class="section-title text-center"><?= Helpers::e($how['title'] ?? '') ?></h2>
-    <div class="how-steps">
-      <?php
-      $steps = $how['steps'] ?? [];
-      $last = count($steps) - 1;
-      foreach ($steps as $i => $step):
-      ?>
-        <div class="how-step">
-          <div class="how-icon">
-            <?php $icon = $step['icon'] ?? 'pin'; require dirname(__DIR__, 2) . '/Partials/cms-icon.php'; ?>
-          </div>
-          <h3><?= Helpers::e($step['title'] ?? '') ?></h3>
-        </div>
-        <?php if ($i < $last): ?><div class="how-arrow" aria-hidden="true">›</div><?php endif; ?>
-      <?php endforeach; ?>
-    </div>
-  </div>
-</section>
-<?php endif; ?>
 
 <?php if ($show('about')): ?>
 <section class="lp-about section" id="about">

@@ -64,14 +64,14 @@ try {
         }
 
         $defaults = SiteSection::defaults();
-        $keys = ['hero', 'features', 'how_it_works', 'about', 'trust_bar', 'footer'];
+        $keys = ['hero', 'about', 'trust_bar', 'footer'];
         $insert = $pdo->prepare(
             'INSERT INTO site_sections (section_key, label, content_json, is_visible, display_order)
              VALUES (?, ?, ?, 1, ?)
              ON DUPLICATE KEY UPDATE content_json = VALUES(content_json), updated_at = NOW()'
         );
 
-        $order = ['hero' => 20, 'features' => 30, 'how_it_works' => 50, 'about' => 60, 'trust_bar' => 70, 'footer' => 90];
+        $order = ['hero' => 20, 'about' => 60, 'trust_bar' => 70, 'footer' => 90];
         foreach ($keys as $key) {
             $section = $defaults[$key] ?? null;
             if (!$section) {
