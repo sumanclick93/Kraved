@@ -2,7 +2,7 @@
 use App\Core\Helpers;
 ?>
 
-<div class="menu-page-wrapper py-4 py-md-5">
+<div class="menu-page-wrapper py-3 py-md-4">
   <div class="container">
     <div class="menu-layout">
       <!-- Left Sidebar: Category List -->
@@ -50,7 +50,7 @@ use App\Core\Helpers;
             <h2 class="menu-category-header"><?= Helpers::e(strtoupper($cat['name'])) ?></h2>
             
             <?php if (!empty($cat['sub_categories'])): ?>
-              <div class="subcat-pills mb-3">
+              <div class="subcat-pills mb-2">
                 <?php foreach ($cat['sub_categories'] as $sub): ?>
                   <a href="<?= Helpers::baseUrl('subcategory/' . $sub['slug']) ?>" class="subcat-pill"><?= Helpers::e($sub['name']) ?></a>
                 <?php endforeach; ?>
@@ -58,13 +58,30 @@ use App\Core\Helpers;
             <?php endif; ?>
 
             <div class="menu-products-grid">
-              <?php foreach ($products as $p): ?>
+              <?php 
+              $g = 0;
+              foreach ($products as $p): 
+                $imgUrl = !empty($p['image'])
+                  ? Helpers::upload((string) $p['image'])
+                  : ($gallery[$g % count($gallery)] ?? Helpers::asset('images/hero-dessert.png'));
+                $g++;
+              ?>
                 <article class="menu-item-card">
-                  <div class="menu-item-body">
-                    <h3 class="menu-item-title"><?= Helpers::e($p['title']) ?></h3>
-                    <?php if (!empty($p['short_description'])): ?>
-                      <p class="menu-item-desc"><?= Helpers::e($p['short_description']) ?></p>
-                    <?php endif; ?>
+                  <div class="menu-item-media">
+                    <img 
+                      src="<?= Helpers::e($imgUrl) ?>" 
+                      alt="<?= Helpers::e($p['title']) ?>" 
+                      loading="lazy" 
+                      onerror="this.onerror=null;this.src='<?= Helpers::e(Helpers::asset('images/hero-dessert.png')) ?>'"
+                    >
+                  </div>
+                  <div class="menu-item-content">
+                    <div class="menu-item-header-text">
+                      <h3 class="menu-item-title"><?= Helpers::e($p['title']) ?></h3>
+                      <?php if (!empty($p['short_description'])): ?>
+                        <p class="menu-item-desc"><?= Helpers::e($p['short_description']) ?></p>
+                      <?php endif; ?>
+                    </div>
                     <div class="menu-item-footer">
                       <span class="menu-item-price"><?= Helpers::money($p['sale_price'] ?? $p['base_price']) ?></span>
                       <button 
