@@ -241,7 +241,7 @@ final class SiteSection extends Model
                     'mission' => 'Our mission is simple, to make every moment sweet and memorable.',
                     'cta_label' => 'Order Online',
                     'cta_href' => '#menu',
-                    'image' => 'images/hero-dessert.png',
+                    'image' => '',
                 ],
             ],
             'trust_bar' => [

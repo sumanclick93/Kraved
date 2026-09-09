@@ -82,19 +82,28 @@ $show = static fn (string $key): bool => !isset($cms[$key]) || !empty($cms[$key]
     </div>
 
     <div class="lp-hero-visual">
-      <div class="hero-glow"></div>
-      <div class="hero-frame">
-        <img
-          src="<?= Helpers::e(SiteSection::mediaUrl($hero['image'] ?? null)) ?>"
-          alt="<?= Helpers::e($hero['image_alt'] ?? 'Dessert') ?>"
-          class="hero-dessert-img"
-          width="560"
-          height="700"
-          onerror="this.style.opacity=.3"
-        >
-        <div class="uk-badge" aria-label="Proudly Serving the UK">
-          <span class="uk-flag-mark" aria-hidden="true"></span>
-          <span><?= $hero['badge_html'] ?? 'Proudly<br>Serving<br>the UK' ?></span>
+      <div class="about-band">
+        <div class="about-copy-col">
+          <?php if (!empty($about['eyebrow'])): ?>
+            <p class="eyebrow"><?= Helpers::e($about['eyebrow']) ?></p>
+          <?php endif; ?>
+          <?php if (!empty($about['copy'])): ?>
+            <p class="about-copy"><?= Helpers::e($about['copy']) ?></p>
+          <?php endif; ?>
+          <?php if (!empty($about['copy_extra'])): ?>
+            <p class="about-copy"><?= Helpers::e($about['copy_extra']) ?></p>
+          <?php endif; ?>
+          <?php if (!empty($about['quote'])): ?>
+            <p class="about-quote">“<?= Helpers::e(trim($about['quote'], '“”"')) ?>”</p>
+          <?php endif; ?>
+          <?php if (!empty($about['mission'])): ?>
+            <p class="about-mission"><?= Helpers::e($about['mission']) ?></p>
+          <?php endif; ?>
+          <?php if (!empty($about['cta_label'])): ?>
+            <div class="about-cta-wrap mt-3">
+              <a href="<?= Helpers::e(SiteSection::resolveHref($about['cta_href'] ?? '#menu')) ?>" class="btn btn-accent"><?= Helpers::e($about['cta_label']) ?></a>
+            </div>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -145,48 +154,7 @@ $show = static fn (string $key): bool => !isset($cms[$key]) || !empty($cms[$key]
 <?php endif; ?>
 
 
-<?php if ($show('about')): ?>
-<section class="lp-about section" id="about">
-  <div class="container about-band">
-    <div class="row align-items-center g-4">
-      <?php if (!empty($about['image'])): ?>
-        <div class="col-lg-5 col-md-6 order-md-2">
-          <div class="about-image-wrap text-center">
-            <img src="<?= Helpers::e(SiteSection::mediaUrl($about['image'])) ?>" alt="About Us" class="img-fluid rounded-4 shadow-sm" style="max-height:360px;object-fit:cover;width:100%">
-          </div>
-        </div>
-      <?php endif; ?>
-      <div class="<?= !empty($about['image']) ? 'col-lg-7 col-md-6' : 'col-12' ?> order-md-1">
-        <div class="about-copy-col">
-          <?php if (!empty($about['eyebrow'])): ?>
-            <p class="eyebrow"><?= Helpers::e($about['eyebrow']) ?></p>
-          <?php endif; ?>
-          <?php if (!empty($about['copy'])): ?>
-            <p class="about-copy"><?= Helpers::e($about['copy']) ?></p>
-          <?php endif; ?>
-          <?php if (!empty($about['copy_extra'])): ?>
-            <p class="about-copy"><?= Helpers::e($about['copy_extra']) ?></p>
-          <?php endif; ?>
-          <?php if (!empty($about['story'])): ?>
-            <p class="about-story mb-3"><?= Helpers::e($about['story']) ?></p>
-          <?php endif; ?>
-          <?php if (!empty($about['quote'])): ?>
-            <p class="about-quote">“<?= Helpers::e($about['quote']) ?>”</p>
-          <?php endif; ?>
-          <?php if (!empty($about['mission'])): ?>
-            <p class="about-mission"><?= Helpers::e($about['mission']) ?></p>
-          <?php endif; ?>
-          <?php if (!empty($about['cta_label'])): ?>
-            <div class="mt-4">
-              <a href="<?= Helpers::e(SiteSection::resolveHref($about['cta_href'] ?? '#menu')) ?>" class="btn btn-accent"><?= Helpers::e($about['cta_label']) ?></a>
-            </div>
-          <?php endif; ?>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<?php endif; ?>
+
 
 <?php if ($show('hygiene')): ?>
 <section class="lp-hygiene section" id="hygiene">
