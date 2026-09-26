@@ -65,7 +65,7 @@ final class SiteSection extends Model
                         ];
                     }
                 }
-                uasort($map, static fn ($a, $b) => $a['display_order'] <=> $b['display_order']);
+                uasort($map, static fn($a, $b) => $a['display_order'] <=> $b['display_order']);
                 self::$cache = $map;
             } catch (\Throwable) {
                 self::$cache = [];
@@ -73,7 +73,7 @@ final class SiteSection extends Model
         }
 
         if ($visibleOnly) {
-            return array_filter(self::$cache, static fn (array $s): bool => $s['is_visible']);
+            return array_filter(self::$cache, static fn(array $s): bool => $s['is_visible']);
         }
 
         return self::$cache;

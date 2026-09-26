@@ -30,7 +30,7 @@ $show = static fn (string $key): bool => !isset($cms[$key]) || !empty($cms[$key]
       <h1 class="lp-headline"><?= Helpers::e($hero['headline_line1'] ?? '') ?><br><?= Helpers::e($hero['headline_line2'] ?? '') ?></h1>
       <p class="lp-subhead"><?= Helpers::e($hero['subhead'] ?? '') ?></p>
 
-      <div class="fulfillment-pills" role="group" aria-label="Order type">
+      <div class="fulfillment-pills d-none" role="group" aria-label="Order type" style="display: none !important;">
         <button type="button"
           class="ff-pill <?= !$isDelivery ? 'active' : '' ?>"
           data-ff-quick="collection">
@@ -100,7 +100,7 @@ $show = static fn (string $key): bool => !isset($cms[$key]) || !empty($cms[$key]
             <p class="about-mission"><?= Helpers::e($about['mission']) ?></p>
           <?php endif; ?>
           <?php if (!empty($about['cta_label'])): ?>
-            <div class="about-cta-wrap mt-3">
+            <div class="about-cta-wrap mt-3 d-none" style="display: none !important;">
               <a href="<?= Helpers::e(SiteSection::resolveHref($about['cta_href'] ?? '#menu')) ?>" class="btn btn-accent"><?= Helpers::e($about['cta_label']) ?></a>
             </div>
           <?php endif; ?>
